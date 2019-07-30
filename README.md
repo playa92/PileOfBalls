@@ -10,4 +10,4 @@ Un semplice gioco realizzato in java e integrato con jdlv per l'intelligenza art
 Davide Aloia - https://github.com/playa92
 
 ## Screenshots:
-<img src="images/pob.png"/> 
+<img src="images/pileofballs.png"/> 
