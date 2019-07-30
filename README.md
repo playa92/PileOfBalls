@@ -3,4 +3,4 @@
 
 
 ## Screenshots:
-<img src="images/backGroundPlayer.png" align="right" height=50/> 
+<img src="images/pob.png"/> 
