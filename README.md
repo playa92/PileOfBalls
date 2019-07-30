@@ -12,3 +12,8 @@ Un semplice gioco realizzato in java e integrato con jdlv per l'intelligenza art
 ## Contributing
 
 Davide Aloia - https://github.com/playa92
+
+## Guide
+
+How to configure Eclipse?
+<a href="https://drive.google.com/open?id=1E7Hwpy8YsWPms7uk03D1b6DsNPVEW6jj">Configuration</a>.
