@@ -7,7 +7,7 @@ Un semplice gioco realizzato in java e integrato con jdlv per l'intelligenza art
 ## Built With
 
 * [Java 5](https://www.inf.unibz.it/~calvanese/teaching/java-docs/5.0/api/ "Java 5") 
-* [Eclipse Juno] (https://www.eclipse.org/downloads/packages/release/juno)
+* [Eclipse Juno](https://www.eclipse.org/downloads/packages/release/juno)
 
 ## Contributing
 
