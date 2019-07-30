@@ -1,0 +1,231 @@
+package dlv;
+
+import logic.HexagonDLV;
+import java.util.LinkedList;
+
+public  class Intelligenza{
+
+	public Intelligenza(){}
+	
+	
+	////////////////
+	// VERSIONE 1 //
+	////////////////
+	
+	public LinkedList<HexagonDLV> solve( LinkedList <HexagonDLV> matrix ){
+				
+		LinkedList<HexagonDLV> result = new LinkedList<HexagonDLV>();
+		<#  
+			in = matrix::m;
+            out = result::res;
+
+			#maxint = 150.
+
+			dispari(1). dispari(3). dispari(5). dispari(7). dispari(9). dispari(11). dispari(13). 
+			pari(2). pari(4). pari(6). pari(8). pari(10). pari(12). pari(14).
+			
+//			% GUESS
+				non_res(X,Y,C,Id) | res(X, Y, C, Id) :- m(X, Y, C, Id).
+			
+//			% per ogni matrice il numero corrispondente di palline
+				contaP(Id,N):- m(_,_,_,Id), #count{X,Y: m(X,Y,C,Id),C!=0}=N.
+				
+//			% matrice con meno palline
+				minP(R) :- #min{N:contaP(_,N)}=R.
+				matriceScelta(Id,N) :- contaP(Id,N),minP(N).
+			
+//			% non può non esistere che un matrice scelta si trovi in 'res'
+				matriceSceltaId(Id) :- matriceScelta(Id,_).
+				:-res(_,_,_,Id), not matriceSceltaId(Id).
+				
+//			% adiacenze
+				adiacenze(X,Y,X2,Y2,C,Id) :- m(X,Y,C,Id), m(X2,Y2,C2,Id2), not Id!=Id2, C!=0, not C!=C2, A=X+Y, B=X2+Y2, B=A+1, X2>=X, Y2>=Y.
+				adiacenze(X,Y,X2,Y2,C,Id) :- m(X,Y,C,Id), m(X2,Y2,C2,Id2), not Id!=Id2, C!=0, not C!=C2, A=X+Y, B=X2+Y2, B=A-1, X2<=X, Y2<=Y.
+				adiacenze(X,Y,X2,Y2,C,Id) :- m(X,Y,C,Id), m(X2,Y2,C2,Id2), not Id!=Id2, C!=0, not C!=C2, dispari(X), X2=X+1, Y2=Y+1.
+				adiacenze(X,Y,X2,Y2,C,Id) :- m(X,Y,C,Id), m(X2,Y2,C2,Id2), not Id!=Id2, C!=0, not C!=C2, dispari(X), X2=X-1, Y2=Y+1.
+				adiacenze(X,Y,X2,Y2,C,Id) :- m(X,Y,C,Id), m(X2,Y2,C2,Id2), not Id!=Id2, C!=0, not C!=C2, pari(X), X2=X-1, Y2=Y-1.
+				adiacenze(X,Y,X2,Y2,C,Id) :- m(X,Y,C,Id), m(X2,Y2,C2,Id2), not Id!=Id2, C!=0, not C!=C2, pari(X), X2=X+1, Y2=Y-1.
+			
+//			% per ogni matrice il numero di tris presenti
+				pallineTris(X,Y,N,Id) :- matriceSceltaId(Id),m(X,Y,C,Id), #count{X2,Y2: adiacenze(X,Y,X2,Y2,C,Id)} = N, N>1.
+				tris(Id,V) :- matriceSceltaId(Id),#count{X,Y:pallineTris(X,Y,N,Id)}=V.
+			
+//			% per ogni matrice il numero di coppie presenti
+				pallineDelTris(X,Y,Id) :- pallineTris(X,Y,_,Id).
+				pallineCoppia(X,Y,Id) :- matriceSceltaId(Id),m(X,Y,C,Id),not pallineDelTris(X,Y,Id), #count{X2,Y2: adiacenze(X,Y,X2,Y2,C,Id), not pallineDelTris(X2,Y2,Id), pari(X), Y2 >= Y} = 1.
+				pallineCoppia(X,Y,Id) :- matriceSceltaId(Id),m(X,Y,C,Id),not pallineDelTris(X,Y,Id), #count{X2,Y2: adiacenze(X,Y,X2,Y2,C,Id), not pallineDelTris(X2,Y2,Id), dispari(X), Y2 > Y} = 1.
+				coppia(Id,V) :- matriceSceltaId(Id),#count{X,Y:pallineCoppia(X,Y,Id)}=V.
+			
+//			% non possono esistere piu matrici come soluzione
+				:- res(_,_,_,Id), res(_,_,_,Id2), Id != Id2.
+			
+//			% salvo gli id dei non_res
+				tmp(Id) :- non_res(_,_,_,Id).
+			
+				tutte(Id):-m(_,_,_,Id).
+//			% altezza per ogni id matrice
+				altezza(Id,S):-tutte(Id),#min{X: m(X,_,C,Id),C!=0}=S.
+				
+//			% costi per tris, coppie e altezza
+				:~ tris(Id,V), tmp(Id). [V:3]
+				:~ coppia(Id,V), tmp(Id). [V:2]
+				:~ altezza(Id,S), tmp(Id) . [S:1]
+										
+		#>
+		
+			if_no_answerset{
+				System.out.println("Nessuna soluzione");
+				return null;
+			}
+				
+			return result;
+	}
+	
+	
+	
+	
+	////////////////
+	// VERSIONE 2 //
+	////////////////
+	
+	
+	public LinkedList<HexagonDLV> solve1( LinkedList <HexagonDLV> matrix ){
+		
+//		System.out.println("SOLVE 1");
+		LinkedList<HexagonDLV> result = new LinkedList<HexagonDLV>();
+		<#  
+			in = matrix::m;
+            out = result::res;
+
+		#maxint = 150.
+
+		dispari(1).dispari(3).dispari(5).dispari(7).dispari(9).dispari(11).dispari(13). 
+		pari(2).pari(4).pari(6).pari(8).pari(10).pari(12).pari(14).
+		
+//		% GUESS
+			non_res(X, Y, C, Id)| res(X,Y,C,Id) :- m(X, Y, C, Id).
+			
+//		% per ogni matrice il numero corrispondente di palline
+			matriciFormate(Id,N):- m(_,_,_,Id), #count{X,Y: m(X,Y,C,Id),C!=0}=N.
+			
+//		% adiacenze
+			adiacenze(X,Y,X2,Y2,C,Id) :- m(X,Y,C,Id), m(X2,Y2,C2,Id2), not Id!=Id2, C!=0, not C!=C2, A=X+Y, B=X2+Y2, B=A+1, X2>=X, Y2>=Y.
+			adiacenze(X,Y,X2,Y2,C,Id) :- m(X,Y,C,Id), m(X2,Y2,C2,Id2), not Id!=Id2, C!=0, not C!=C2, A=X+Y, B=X2+Y2, B=A-1, X2<=X, Y2<=Y.
+			adiacenze(X,Y,X2,Y2,C,Id) :- m(X,Y,C,Id), m(X2,Y2,C2,Id2), not Id!=Id2, C!=0, not C!=C2, dispari(X), X2=X+1, Y2=Y+1.
+			adiacenze(X,Y,X2,Y2,C,Id) :- m(X,Y,C,Id), m(X2,Y2,C2,Id2), not Id!=Id2, C!=0, not C!=C2, dispari(X), X2=X-1, Y2=Y+1.
+			adiacenze(X,Y,X2,Y2,C,Id) :- m(X,Y,C,Id), m(X2,Y2,C2,Id2), not Id!=Id2, C!=0, not C!=C2, pari(X), X2=X-1, Y2=Y-1.
+			adiacenze(X,Y,X2,Y2,C,Id) :- m(X,Y,C,Id), m(X2,Y2,C2,Id2), not Id!=Id2, C!=0, not C!=C2, pari(X), X2=X+1, Y2=Y-1.
+		
+//		% per ogni matrice il numero di tris presenti
+			pallineTris(X,Y,N,Id) :- matriciFormate(Id,_),m(X,Y,C,Id), #count{X2,Y2: adiacenze(X,Y,X2,Y2,C,Id)} = N, N>1.
+			tris(Id,V) :- matriciFormate(Id,_),#count{X,Y:pallineTris(X,Y,N,Id)}=V.
+		
+//		% per ogni matrice il numero di coppie presenti
+			pallineDelTris(X,Y,Id) :- pallineTris(X,Y,_,Id).
+			pallineCoppia(X,Y,Id) :- matriciFormate(Id,_),m(X,Y,C,Id),not pallineDelTris(X,Y,Id), #count{X2,Y2: adiacenze(X,Y,X2,Y2,C,Id), not pallineDelTris(X2,Y2,Id), pari(X), Y2 >= Y} = 1.
+			pallineCoppia(X,Y,Id) :- matriciFormate(Id,_),m(X,Y,C,Id),not pallineDelTris(X,Y,Id), #count{X2,Y2: adiacenze(X,Y,X2,Y2,C,Id), not pallineDelTris(X2,Y2,Id), dispari(X), Y2 > Y} = 1.
+			coppia(Id,V) :- matriciFormate(Id,_),#count{X,Y:pallineCoppia(X,Y,Id)}=V.
+		
+//		% non possono esistere piu matrici come soluzione
+			:- res(_,_,_,Id), res(_,_,_,Id2), Id != Id2.
+		
+//		% salvo gli id dei non_res e res
+			tmp(Id) :- non_res(_,_,_,Id).
+			tmp2(Id) :- res(_,_,_,Id).
+		
+			tutte(Id) :- m(_,_,_,Id).
+//		% altezza per ogni id matrice
+			altezza(Id,S):-tutte(Id),#min{X: m(X,_,C,Id),C!=0}=S.
+			
+//		% deve esistere almeno 1 res
+			:- #count{Id:tmp2(Id)} < 1.
+			
+//		% costi per tris, coppie, altezza e numeri palline
+			
+			:~ matriciFormate(Id,N), tmp2(Id). [N:4]
+			:~ tris(Id,V), tmp(Id). [V:3]
+			:~ coppia(Id,V), tmp(Id). [V:2]
+			:~ altezza(Id,S), tmp(Id) . [S:1]
+			
+						
+		#>
+		
+		if_no_answerset{
+			System.out.println("Nessuna soluzione");
+			return null;
+		}
+		catch_error{
+			System.err.println("Errore");
+			return null;
+		}
+				
+		return result;
+	}
+	
+	public LinkedList<HexagonDLV> solve2( LinkedList <HexagonDLV> matrix ){
+//		System.out.println("SOLVE 2");
+		LinkedList<HexagonDLV> result = new LinkedList<HexagonDLV>();
+		<#  
+			in = matrix::m;
+            out = result::res;
+
+			#maxint = 150.
+			
+			dispari(1).dispari(3).dispari(5).dispari(7).dispari(9).dispari(11).dispari(13). 
+			pari(2).pari(4).pari(6).pari(8).pari(10).pari(12).pari(14).
+			
+			//% GUESS
+				non_res(X, Y, C, Id)| res(X,Y,C,Id) :- m(X, Y, C, Id).
+			
+			//% per ogni matrice il numero corrispondente di palline
+				matriciFormate(Id,N):- m(_,_,_,Id), #count{X,Y: m(X,Y,C,Id),C!=0}=N.
+			
+			//% adiacenze
+				adiacenze(X,Y,X2,Y2,C,Id) :- m(X,Y,C,Id), m(X2,Y2,C2,Id2), not Id!=Id2, C!=0, not C!=C2, A=X+Y, B=X2+Y2, B=A+1, X2>=X, Y2>=Y.
+				adiacenze(X,Y,X2,Y2,C,Id) :- m(X,Y,C,Id), m(X2,Y2,C2,Id2), not Id!=Id2, C!=0, not C!=C2, A=X+Y, B=X2+Y2, B=A-1, X2<=X, Y2<=Y.
+				adiacenze(X,Y,X2,Y2,C,Id) :- m(X,Y,C,Id), m(X2,Y2,C2,Id2), not Id!=Id2, C!=0, not C!=C2, dispari(X), X2=X+1, Y2=Y+1.
+				adiacenze(X,Y,X2,Y2,C,Id) :- m(X,Y,C,Id), m(X2,Y2,C2,Id2), not Id!=Id2, C!=0, not C!=C2, dispari(X), X2=X-1, Y2=Y+1.
+				adiacenze(X,Y,X2,Y2,C,Id) :- m(X,Y,C,Id), m(X2,Y2,C2,Id2), not Id!=Id2, C!=0, not C!=C2, pari(X), X2=X-1, Y2=Y-1.
+				adiacenze(X,Y,X2,Y2,C,Id) :- m(X,Y,C,Id), m(X2,Y2,C2,Id2), not Id!=Id2, C!=0, not C!=C2, pari(X), X2=X+1, Y2=Y-1.
+			
+			//% per ogni matrice il numero di tris presenti
+				pallineTris(X,Y,N,Id) :- matriciFormate(Id,_),m(X,Y,C,Id), #count{X2,Y2: adiacenze(X,Y,X2,Y2,C,Id)} = N, N>1.
+				tris(Id,V) :- matriciFormate(Id,_),#count{X,Y:pallineTris(X,Y,N,Id)}=V.
+			
+			//% per ogni matrice il numero di coppie presenti
+				pallineDelTris(X,Y,Id) :- pallineTris(X,Y,_,Id).
+				pallineCoppia(X,Y,Id) :- matriciFormate(Id,_),m(X,Y,C,Id),not pallineDelTris(X,Y,Id), #count{X2,Y2: adiacenze(X,Y,X2,Y2,C,Id), not pallineDelTris(X2,Y2,Id), pari(X), Y2 >= Y} = 1.
+				pallineCoppia(X,Y,Id) :- matriciFormate(Id,_),m(X,Y,C,Id),not pallineDelTris(X,Y,Id), #count{X2,Y2: adiacenze(X,Y,X2,Y2,C,Id), not pallineDelTris(X2,Y2,Id), dispari(X), Y2 > Y} = 1.
+				coppia(Id,V) :- matriciFormate(Id,_),#count{X,Y:pallineCoppia(X,Y,Id)}=V.
+			
+			//% non possono esistere piu matrici come soluzione
+				:- res(_,_,_,Id), res(_,_,_,Id2), Id != Id2.
+			
+			//% salvo gli id dei non_res
+				tmp(Id) :- non_res(_,_,_,Id).
+				tmp2(Id) :- res(_,_,_,Id).
+			
+				tutte(Id):-m(_,_,_,Id).
+			//% altezza per ogni id matrice
+				altezza(Id,S):-tutte(Id),#min{X: m(X,_,C,Id),C!=0}=S.
+			
+			//% deve esistere almeno 1 res
+			:- #count{Id:tmp2(Id)} < 1.
+			
+			//% costi per tris, coppie, altezza e numeri palline
+			    :~ altezza(Id,S), tmp(Id) . [S:4]
+				:~ matriciFormate(Id,N), tmp2(Id). [N:3]	
+				:~ tris(Id,V), tmp(Id). [V:2]
+				:~ coppia(Id,V), tmp(Id). [V:1]
+							
+			#>
+			
+			if_no_answerset{
+				System.out.println("Nessuna soluzione");
+				return null;
+			}
+					
+			return result;
+		}
+		
+}
