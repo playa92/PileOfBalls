@@ -10,6 +10,7 @@ Se il gioco si fa duro premi "solve"
 
 * [Java 5](https://www.inf.unibz.it/~calvanese/teaching/java-docs/5.0/api/ "Java 5") 
 * [Eclipse Juno](https://www.eclipse.org/downloads/packages/release/juno)
+* [JDLV]
 
 ## Contributing
 
