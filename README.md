@@ -18,5 +18,5 @@ Davide Aloia - https://github.com/playa92
 
 ## Guide
 
-How to configure Eclipse?
+How to integrate jdlv and configure Eclipse?
 <a href="https://drive.google.com/open?id=1E7Hwpy8YsWPms7uk03D1b6DsNPVEW6jj">Configuration</a>.
