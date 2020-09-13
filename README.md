@@ -3,7 +3,7 @@ Crea tonnellate di divertimento rotante mentre carichi nelle affascinanti e colo
 Il tuo obiettivo in questo gioco è formare gruppi di almeno 4 palline dello stesso colore in modo che possano essere rimossi. 
 Se il gioco si fa duro premi "solve" e l'intelligenza artificiale ti suggerirà le successive mosse.
 
-## Screenshots
+## Screen
 <img src="images/pileofballs.png"/> 
 
 ## Built With
